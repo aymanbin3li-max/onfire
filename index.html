@@ -2,9 +2,32 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>On Fire Restaurant - مطعم أون فاير</title>
     
+    <!-- =========================================
+         SOCIAL MEDIA & SHARING META TAGS
+    ========================================== -->
+    <meta name="description" content="مطعم أون فاير - طعم مصري على أصوله. مشويات، طواجن، ومأكولات مصرية شعبية في مكة المكرمة.">
+    <meta property="og:title" content="On Fire Restaurant - مطعم أون فاير">
+    <meta property="og:description" content="أشهى المأكولات المصرية والمشويات في مكة. اطلب الآن واستمتع بالطعم الأصيل.">
+    <meta property="og:image" content="https://onfirrestaurant.github.io/onfire/OnFire-logo.png">
+    <meta property="og:url" content="https://onfirrestaurant.github.io/onfire/">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#ea580c">
+
+    <!-- =========================================
+         PWA / MOBILE APP CAPABILITIES
+    ========================================== -->
+    <!-- iOS / Apple -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="On Fire">
+    <link rel="apple-touch-icon" href="https://onfirrestaurant.github.io/onfire/OnFire-logo.png">
+    
+    <!-- Dynamic Manifest for Android PWA (Embedded) -->
+    <link rel="manifest" id="my-manifest-placeholder">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -37,12 +60,23 @@
 
         /* Offer list checkmark alignment fix for LTR */
         body.lang-en .offer-check { margin-right: 0.5rem; margin-left: 0; }
+
+        /* Custom Pulse Animation for WhatsApp Button */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(234, 88, 12, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(234, 88, 12, 0); }
+            100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(234, 88, 12, 0); }
+        }
+        
+        .whatsapp-pulse {
+            animation: pulse-ring 2s infinite;
+        }
     </style>
 </head>
 <body class="font-cairo bg-gray-50 text-gray-800 transition-all duration-300">
 
     <!-- Navbar -->
-    <nav class="bg-black text-white sticky top-0 z-50 shadow-lg border-b-4 border-orange-600">
+    <nav class="bg-black text-white sticky top-0 z-40 shadow-lg border-b-4 border-orange-600">
         <div class="container mx-auto px-4 py-2 flex justify-between items-center">
             <!-- Logo -->
             <a href="#" class="flex items-center gap-2 group">
@@ -86,6 +120,12 @@
             </div>
         </div>
     </nav>
+
+    <!-- Floating WhatsApp Button (New Feature) -->
+    <!-- يظهر فوق الشريط السفلي في الجوال، وفي الزاوية في الكمبيوتر -->
+    <a href="https://wa.me/966557006635" target="_blank" class="fixed bottom-20 right-4 md:bottom-8 md:right-8 z-50 bg-orange-600 text-white w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-2xl transition hover:bg-orange-700 hover:-translate-y-2 whatsapp-pulse" aria-label="Chat on WhatsApp">
+        <i class="fab fa-whatsapp text-3xl md:text-4xl"></i>
+    </a>
 
     <!-- Hero Section -->
     <section id="home" class="relative min-h-screen flex items-center justify-center bg-zinc-900 overflow-hidden">
@@ -368,7 +408,7 @@
     </footer>
 
     <!-- Mobile Bottom Sticky Bar -->
-    <div class="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-800 md:hidden z-50 flex justify-around items-center h-[60px] pb-1">
+    <div class="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-800 md:hidden z-40 flex justify-around items-center h-[60px] pb-1">
         <a href="#menu" class="flex flex-col items-center justify-center text-gray-400 hover:text-orange-500 w-full h-full">
             <i class="fas fa-book-open text-lg mb-1"></i>
             <span class="text-xs nav-link" data-key="mobile_menu">المنيو</span>
@@ -385,14 +425,42 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Init Animation
+        // --- 1. PWA Manifest Generation (Embedded) ---
+        // This allows PWA functionality without a separate manifest.json file
+        const manifest = {
+            "name": "On Fire Restaurant",
+            "short_name": "On Fire",
+            "start_url": ".",
+            "display": "standalone",
+            "background_color": "#18181b", 
+            "theme_color": "#ea580c",
+            "orientation": "portrait",
+            "icons": [
+                {
+                    "src": "https://onfirrestaurant.github.io/onfire/OnFire-logo.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                },
+                {
+                    "src": "https://onfirrestaurant.github.io/onfire/OnFire-logo.png",
+                    "sizes": "512x512",
+                    "type": "image/png"
+                }
+            ]
+        };
+        const stringManifest = JSON.stringify(manifest);
+        const blob = new Blob([stringManifest], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(blob);
+        document.querySelector('#my-manifest-placeholder').setAttribute('href', manifestURL);
+
+        // --- 2. Init Animation ---
         AOS.init({
             duration: 800,
             once: true,
             offset: 100
         });
 
-        // Data with dual language support and Image Placeholder
+        // --- 3. Data & Translations ---
         const menuData = {
             grilled: [
                 {name: {ar: 'دجاج مشوي', en: 'Grilled Chicken'}, price: '13', desc: {ar: 'صدر دجاج مضاف إليه دهن الخروف، والبصل، والبقدونس الطازج', en: 'Chicken breast with lamb fat, onion, and fresh parsley'}, img: 'https://placehold.co/600x400'},
